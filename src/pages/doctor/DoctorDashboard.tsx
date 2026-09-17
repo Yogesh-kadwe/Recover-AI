@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import type { TriageStatus } from '../../types';
-import { Stethoscope, Search, ShieldAlert, ArrowRight } from 'lucide-react';
+import { Stethoscope, Search, ShieldAlert, ArrowRight, Video } from 'lucide-react';
 
 export const DoctorDashboard: React.FC = () => {
   const { patientsList, setSelectedPatientId, setActiveTab } = useApp();
@@ -33,17 +33,26 @@ export const DoctorDashboard: React.FC = () => {
           <p className="text-xs text-slate-300 mt-1">Real-time triage telemetry across active discharged patients</p>
         </div>
 
-        <button
-          onClick={() => {
-            const criticalP = patientsList.find((p) => p.status === 'critical') || patientsList[0];
-            setSelectedPatientId(criticalP.id);
-            setActiveTab('patient_detail');
-          }}
-          className="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-extrabold rounded-xl text-xs transition-all shadow-md flex items-center gap-2 shrink-0"
-        >
-          <ShieldAlert className="w-4 h-4 animate-bounce" />
-          <span>Inspect Critical Cases ({countByStatus('critical')})</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <button
+            onClick={() => setActiveTab('consultation')}
+            className="px-4 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-black rounded-xl text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer active:scale-95"
+          >
+            <Video className="w-4 h-4" />
+            <span>👨‍⚕️ Video Consultation</span>
+          </button>
+          <button
+            onClick={() => {
+              const criticalP = patientsList.find((p) => p.status === 'critical') || patientsList[0];
+              setSelectedPatientId(criticalP.id);
+              setActiveTab('patient_detail');
+            }}
+            className="px-4 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-extrabold rounded-xl text-xs transition-all shadow-md flex items-center gap-2 shrink-0 cursor-pointer active:scale-95"
+          >
+            <ShieldAlert className="w-4 h-4 animate-bounce" />
+            <span>Inspect Critical Cases ({countByStatus('critical')})</span>
+          </button>
+        </div>
       </div>
 
       {/* KPI METRIC CARDS */}

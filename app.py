@@ -29,6 +29,7 @@ from db import (
 )
 from security import verify_recaptcha_v3, verify_google_oauth_token
 from compliance import AuditTrailLogger, GDPRAndDPDPEngine, get_compliance_health_score
+from ai.consultation_signaling import consultation_manager
 
 try:
     init_db()
@@ -1011,6 +1012,105 @@ def gdpr_export_patient_data(patient_id):
         "status": "success",
         "export_bundle": data_bundle
     })
+
+
+# ==============================================================================
+# DOCTOR VIDEO CONFERENCE & TELEHEALTH WEBRTC SIGNALING ENDPOINTS
+# ==============================================================================
+
+@app.route("/api/consultation/create", methods=["POST"])
+def consultation_create_room():
+    """Patient creates a new Doctor Consultation room."""
+    data = request.get_json(silent=True) or {}
+    patient_id = data.get("patient_id", config.PATIENT_ID)
+    patient_name = data.get("patient_name", "Patient")
+    custom_room_id = data.get("room_id")
+
+    result = consultation_manager.create_room(
+        patient_id=patient_id,
+        patient_name=patient_name,
+        custom_room_id=custom_room_id
+    )
+    return jsonify(result), 200
+
+
+@app.route("/api/consultation/join", methods=["POST"])
+def consultation_join_room():
+    """Doctor or Patient joins an active consultation room."""
+    data = request.get_json(silent=True) or {}
+    room_id = data.get("room_id", "").strip()
+    role = data.get("role", "doctor").strip()
+    name = data.get("name", "Doctor" if role == "doctor" else "Patient").strip()
+    user_id = data.get("user_id", "")
+
+    if not room_id:
+        return jsonify({"success": False, "error": "Room ID is required"}), 400
+
+    result = consultation_manager.join_room(
+        room_id=room_id,
+        role=role,
+        name=name,
+        user_id=user_id
+    )
+    status_code = 200 if result.get("success") else 404
+    return jsonify(result), status_code
+
+
+@app.route("/api/consultation/signal", methods=["POST"])
+def consultation_send_signal():
+    """Exchange WebRTC SDP offers/answers and ICE candidates."""
+    data = request.get_json(silent=True) or {}
+    room_id = data.get("room_id", "").strip()
+    sender_role = data.get("sender_role", "").strip()
+    signal_type = data.get("type", "").strip()
+    payload = data.get("payload")
+
+    if not room_id or not sender_role or not signal_type:
+        return jsonify({"success": False, "error": "room_id, sender_role, and type are required"}), 400
+
+    result = consultation_manager.send_signal(
+        room_id=room_id,
+        sender_role=sender_role,
+        signal_type=signal_type,
+        payload=payload
+    )
+    status_code = 200 if result.get("success") else 400
+    return jsonify(result), status_code
+
+
+@app.route("/api/consultation/poll", methods=["GET"])
+def consultation_poll_signals():
+    """Poll for queued incoming signaling messages from peer."""
+    room_id = request.args.get("room_id", "").strip()
+    role = request.args.get("role", "").strip()
+
+    if not room_id or not role:
+        return jsonify({"success": False, "error": "room_id and role parameters required"}), 400
+
+    result = consultation_manager.poll_signals(room_id=room_id, role=role)
+    return jsonify(result), 200
+
+
+@app.route("/api/consultation/leave", methods=["POST"])
+def consultation_leave_room():
+    """Leave or end a consultation session."""
+    data = request.get_json(silent=True) or {}
+    room_id = data.get("room_id", "").strip()
+    role = data.get("role", "patient").strip()
+
+    if not room_id:
+        return jsonify({"success": False, "error": "Room ID is required"}), 400
+
+    result = consultation_manager.leave_room(room_id=room_id, role=role)
+    return jsonify(result), 200
+
+
+@app.route("/api/consultation/room/<room_id>", methods=["GET"])
+def consultation_get_room(room_id):
+    """Query consultation room metadata."""
+    info = consultation_manager.get_room_info(room_id)
+    return jsonify(info), 200 if info.get("exists") else 404
+
 
 if __name__ == "__main__":
     print("================================================================")

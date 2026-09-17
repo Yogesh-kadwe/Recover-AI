@@ -9,6 +9,7 @@ import {
   Pill,
   Clock,
   Camera,
+  Video,
   BellRing,
   User,
   PhoneCall,
@@ -27,6 +28,7 @@ export const Sidebar: React.FC = () => {
 
   const patientNav = [
     { id: 'dashboard', label: 'Patient Dashboard', icon: LayoutDashboard },
+    { id: 'consultation', label: 'Doctor Consultation', icon: Video, highlight: true },
     { id: 'appointments', label: 'Doctor Appointments', icon: Calendar },
     { id: 'recovery', label: 'My Recovery Plan', icon: HeartPulse },
     { id: 'checkup', label: 'Daily Health Check', icon: ClipboardCheck, highlight: true },
@@ -41,6 +43,7 @@ export const Sidebar: React.FC = () => {
 
   const doctorNav = [
     { id: 'doctor_dashboard', label: 'Doctor Dashboard', icon: LayoutDashboard },
+    { id: 'consultation', label: 'Telehealth Consultation', icon: Video, highlight: true },
     { id: 'patient_detail', label: 'Patient Detail View', icon: UserCheck },
     { id: 'alerts', label: 'Clinical Incident Log', icon: ShieldAlert, badge: unreadAlertCount },
   ];

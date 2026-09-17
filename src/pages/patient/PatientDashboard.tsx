@@ -98,7 +98,7 @@ export const PatientDashboard: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 flex items-center gap-4 shrink-0">
+          <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 flex flex-wrap items-center gap-3 shrink-0">
             <div>
               <span className="text-[11px] text-teal-200 uppercase font-bold tracking-wider block">Current Recovery Triage</span>
               <div className="mt-1">
@@ -106,8 +106,15 @@ export const PatientDashboard: React.FC = () => {
               </div>
             </div>
             <button
+              onClick={() => setActiveTab('consultation')}
+              className="px-4 py-2 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-slate-950 font-black rounded-xl text-xs transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5"
+            >
+              <Video className="w-4 h-4" />
+              <span>👨‍⚕️ Doctor Consultation</span>
+            </button>
+            <button
               onClick={() => setActiveTab('checkup')}
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold rounded-xl text-xs transition-all shadow-md active:scale-95 cursor-pointer"
+              className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white font-extrabold rounded-xl text-xs transition-all border border-white/30 active:scale-95 cursor-pointer"
             >
               Start Daily Checkup
             </button>

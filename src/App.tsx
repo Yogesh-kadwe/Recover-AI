@@ -30,6 +30,9 @@ import { CaregiverDashboard } from './pages/caregiver/CaregiverDashboard';
 // Admin Pages
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 
+// Doctor Telehealth & Video Consultation
+import { DoctorConsultationPage } from './pages/consultation/DoctorConsultationPage';
+
 const MainContent: React.FC = () => {
   const { role, activeTab } = useApp();
 
@@ -58,6 +61,8 @@ const MainContent: React.FC = () => {
         return <RecoveryTimelinePage />;
       case 'camera':
         return <CameraMonitoringPage />;
+      case 'consultation':
+        return <DoctorConsultationPage initialRole="patient" />;
       case 'alerts':
         return <AlertsPage />;
       case 'profile':
@@ -76,6 +81,8 @@ const MainContent: React.FC = () => {
         return <DoctorDashboard />;
       case 'patient_detail':
         return <PatientDetailPage />;
+      case 'consultation':
+        return <DoctorConsultationPage initialRole="doctor" />;
       case 'alerts':
         return <AlertsPage />;
       default:

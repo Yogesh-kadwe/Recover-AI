@@ -5,6 +5,7 @@ import {
   ClipboardCheck,
   Pill,
   Camera,
+  Video,
   BellRing,
   Menu,
   X,
@@ -23,14 +24,15 @@ export const MobileNav: React.FC = () => {
 
   const quickNav = [
     { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
+    { id: 'consultation', label: 'Consult', icon: Video },
     { id: 'checkup', label: 'Checkup', icon: ClipboardCheck },
-    { id: 'medications', label: 'Medicines', icon: Pill },
     { id: 'camera', label: 'Camera', icon: Camera },
     { id: 'alerts', label: 'Alerts', icon: BellRing, badge: unreadAlertCount },
   ];
 
   const fullNav = [
     { id: 'dashboard', label: 'Patient Dashboard', icon: LayoutDashboard },
+    { id: 'consultation', label: 'Doctor Consultation', icon: Video },
     { id: 'recovery', label: 'My Recovery Plan', icon: HeartPulse },
     { id: 'checkup', label: 'Daily Health Checkup', icon: ClipboardCheck },
     { id: 'prescription', label: 'Prescription Viewer', icon: FileText },
